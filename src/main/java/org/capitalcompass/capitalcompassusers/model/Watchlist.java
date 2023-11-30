@@ -21,12 +21,10 @@ public class Watchlist {
     private Long id;
 
     @NotNull
-    private String userSub;
+    private String userId;
 
     @NotNull
     private String name;
-
-    private String description;
 
     @NotNull
     private Date creationDate;
