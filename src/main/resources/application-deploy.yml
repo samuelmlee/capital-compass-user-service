@@ -1,0 +1,12 @@
+spring:
+  config:
+    import: aws-parameterstore:/config/users_deploy/
+
+  datasource:
+    url: jdbc:mysql://dev-users-service-db.cilc3kq4nxmz.eu-central-1.rds.amazonaws.com:3306/users_db?useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UT
+
+
+logging:
+  level:
+    com.amazonaws: DEBUG
+    org.springframework.cloud: DEBUG

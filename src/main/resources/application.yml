@@ -1,10 +1,20 @@
-
 server:
   port: 0
 
 spring:
   application:
-    name: stocks
+    name: users
+  profiles:
+    active: deploy
+  datasource:
+    driver: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate.ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+
 
 eureka:
   client:
@@ -12,3 +22,10 @@ eureka:
       defaultZone: http://localhost:8010/eureka
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+
+logging:
+  level:
+    com.amazonaws: DEBUG
+
+
