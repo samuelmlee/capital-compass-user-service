@@ -8,13 +8,17 @@ spring:
     active: deploy
   datasource:
     driver: com.mysql.cj.jdbc.Driver
-
   jpa:
     hibernate.ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/capitalcompass
 
 eureka:
   client:
@@ -23,9 +27,5 @@ eureka:
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 
-
-logging:
-  level:
-    com.amazonaws: DEBUG
 
 
