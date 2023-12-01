@@ -60,7 +60,6 @@ public class WatchListsController {
                         .path("/watchlists/")
                         .path(String.valueOf(createdWatchList.getId()))
                         .toUriString());
-
         return ResponseEntity.created(location).build();
 
 

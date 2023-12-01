@@ -22,8 +22,8 @@ public class WatchListService {
 
     private final WatchListRepository watchListRepository;
 
-    public List<Watchlist> getWatchListsForUser(String userSub) {
-        return watchListRepository.findByUserSub(userSub);
+    public List<Watchlist> getWatchListsForUser(String userId) {
+        return watchListRepository.findByUserId(userId);
     }
 
     public Watchlist createWatchList(Principal principal, WatchlistRequest request) {
@@ -42,11 +42,11 @@ public class WatchListService {
 
     }
 
-    public Watchlist getWatchListById(Long id, String userSub) throws AccessDeniedException {
+    public Watchlist getWatchListById(Long id, String userId) throws AccessDeniedException {
         Watchlist watchlist = this.watchListRepository.findById(id).orElseThrow(EntityNotFoundException::new);
 
-        if (!Objects.equals(watchlist.getUserId(), userSub)) {
-            throw new AccessDeniedException("Watchlist is not created by the user");
+        if (!Objects.equals(watchlist.getUserId(), userId)) {
+            throw new AccessDeniedException("Watchlist was not created by the user");
         }
         return watchlist;
     }

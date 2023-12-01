@@ -6,7 +6,8 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -32,8 +33,7 @@ public class Watchlist {
     @NotNull
     private Date lastUpdateDate;
 
-    @ElementCollection
-    @CollectionTable(name = "watchlist_tickers", joinColumns = @JoinColumn(name = "watchlist_id"))
-    @Column(name = "ticker")
-    private List<String> tickers;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    private Set<Ticker> tickers = new HashSet<>();
 }
