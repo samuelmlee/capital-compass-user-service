@@ -1,6 +1,7 @@
 package org.capitalcompass.capitalcompassusers.service;
 
 import lombok.RequiredArgsConstructor;
+import org.capitalcompass.capitalcompassusers.exception.WatchlistAlreadyExistsException;
 import org.capitalcompass.capitalcompassusers.model.Watchlist;
 import org.capitalcompass.capitalcompassusers.model.WatchlistRequest;
 import org.capitalcompass.capitalcompassusers.repository.WatchListRepository;
@@ -27,6 +28,11 @@ public class WatchListService {
     }
 
     public Watchlist createWatchList(Principal principal, WatchlistRequest request) {
+        String watchlistName = request.getName();
+
+        if (!this.watchListRepository.findByName(watchlistName).isEmpty()) {
+            throw new WatchlistAlreadyExistsException("Watchlist already exists with name : " + watchlistName);
+        }
 
 
         Date date = new Date();

@@ -50,19 +50,18 @@ public class WatchListsController {
     }
 
     @PostMapping
-    public ResponseEntity<Watchlist> createWatchlist(Principal principal, @RequestBody WatchlistRequest request) throws URISyntaxException {
+    public ResponseEntity<?> createWatchlist(Principal principal, @RequestBody WatchlistRequest request) throws URISyntaxException {
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+        // TODO: Add custom Global Handler for WatchlistAlreadyExistsException
         Watchlist createdWatchList = this.watchListService.createWatchList(principal, request);
         URI location = new URI(
                 ServletUriComponentsBuilder.fromCurrentContextPath()
                         .path("/watchlists/")
                         .path(String.valueOf(createdWatchList.getId()))
                         .toUriString());
-        return ResponseEntity.created(location).build();
-
-
+        return ResponseEntity.created(location).body(createdWatchList);
     }
 
 

@@ -25,6 +25,7 @@ public class Watchlist {
     private String userId;
 
     @NotNull
+    @Column(unique = true)
     private String name;
 
     @NotNull
@@ -33,7 +34,6 @@ public class Watchlist {
     @NotNull
     private Date lastUpdateDate;
 
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    private Set<Ticker> tickers = new HashSet<>();
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<String> tickers = new HashSet<>();
 }
