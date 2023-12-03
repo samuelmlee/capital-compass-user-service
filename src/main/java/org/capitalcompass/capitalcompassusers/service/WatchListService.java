@@ -8,7 +8,6 @@ import org.capitalcompass.capitalcompassusers.repository.WatchListRepository;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import javax.validation.Validator;
 import java.nio.file.AccessDeniedException;
 import java.security.Principal;
 import java.util.Date;
@@ -19,8 +18,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class WatchListService {
 
-    private final Validator validator;
-
     private final WatchListRepository watchListRepository;
 
     public List<Watchlist> getWatchListsForUser(String userId) {
@@ -30,7 +27,7 @@ public class WatchListService {
     public Watchlist createWatchList(Principal principal, WatchlistRequest request) {
         String watchlistName = request.getName();
 
-        if (!this.watchListRepository.findByName(watchlistName).isEmpty()) {
+        if (!watchListRepository.findByName(watchlistName).isEmpty()) {
             throw new WatchlistAlreadyExistsException("Watchlist already exists with name : " + watchlistName);
         }
 
@@ -44,12 +41,12 @@ public class WatchListService {
                 .lastUpdateDate(date)
                 .build();
 
-        return this.watchListRepository.save(watchlist);
+        return watchListRepository.save(watchlist);
 
     }
 
     public Watchlist getWatchListById(Long id, String userId) throws AccessDeniedException {
-        Watchlist watchlist = this.watchListRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        Watchlist watchlist = watchListRepository.findById(id).orElseThrow(EntityNotFoundException::new);
 
         if (!Objects.equals(watchlist.getUserId(), userId)) {
             throw new AccessDeniedException("Watchlist was not created by the user");

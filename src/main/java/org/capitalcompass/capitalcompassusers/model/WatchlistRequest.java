@@ -1,13 +1,11 @@
 package org.capitalcompass.capitalcompassusers.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
 public class WatchlistRequest {
     @NotNull
     private String name;

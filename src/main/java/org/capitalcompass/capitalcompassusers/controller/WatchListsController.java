@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.AccessDeniedException;
@@ -25,22 +26,16 @@ public class WatchListsController {
 
     @GetMapping
     public ResponseEntity<List<Watchlist>> getWatchListsForUser(Principal principal) {
-        if (principal == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
         String userSub = principal.getName();
-        List<Watchlist> lists = this.watchListService.getWatchListsForUser(userSub);
+        List<Watchlist> lists = watchListService.getWatchListsForUser(userSub);
         return ResponseEntity.ok(lists);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Watchlist> getWatchListById(Principal principal, @PathVariable Long id) {
-        if (principal == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
         Watchlist watchList;
         try {
-            watchList = this.watchListService.getWatchListById(id, principal.getName());
+            watchList = watchListService.getWatchListById(id, principal.getName());
             return ResponseEntity.ok(watchList);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
@@ -50,12 +45,9 @@ public class WatchListsController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createWatchlist(Principal principal, @RequestBody WatchlistRequest request) throws URISyntaxException {
-        if (principal == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+    public ResponseEntity<?> createWatchlist(Principal principal, @Valid @RequestBody WatchlistRequest request) throws URISyntaxException {
         // TODO: Add custom Global Handler for WatchlistAlreadyExistsException
-        Watchlist createdWatchList = this.watchListService.createWatchList(principal, request);
+        Watchlist createdWatchList = watchListService.createWatchList(principal, request);
         URI location = new URI(
                 ServletUriComponentsBuilder.fromCurrentContextPath()
                         .path("/watchlists/")
