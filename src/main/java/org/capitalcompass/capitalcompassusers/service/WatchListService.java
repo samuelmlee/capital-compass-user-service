@@ -27,7 +27,7 @@ public class WatchListService {
     public Watchlist createWatchList(Principal principal, WatchlistRequest request) {
         String watchlistName = request.getName();
 
-        if (!watchListRepository.findByName(watchlistName).isEmpty()) {
+        if (!watchListRepository.existsByName(watchlistName)) {
             throw new WatchlistAlreadyExistsException("Watchlist already exists with name : " + watchlistName);
         }
         Date date = new Date();
