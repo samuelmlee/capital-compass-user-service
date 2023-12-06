@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.net.URISyntaxException;
 import java.security.Principal;
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class WatchListsController {
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
-    public Watchlist createWatchlist(Principal principal, @Valid @RequestBody WatchlistRequest request) throws URISyntaxException {
+    public Watchlist createWatchlist(Principal principal, @Valid @RequestBody WatchlistRequest request) {
         return watchListService.createWatchList(principal, request);
     }
 
