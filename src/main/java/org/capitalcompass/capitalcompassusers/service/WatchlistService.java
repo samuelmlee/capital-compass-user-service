@@ -16,7 +16,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-public class WatchListService {
+public class WatchlistService {
 
     private final WatchListRepository watchListRepository;
 
