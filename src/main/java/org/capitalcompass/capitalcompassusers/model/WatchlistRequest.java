@@ -10,5 +10,5 @@ public class WatchlistRequest {
     @NotNull
     private String name;
 
-    private Set<String> tickers;
+    private Set<Ticker> tickers;
 }

@@ -36,6 +36,6 @@ public class Watchlist {
     @NotNull
     private Date lastUpdateDate;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Set<String> tickers = new HashSet<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Ticker> tickers = new HashSet<>();
 }
