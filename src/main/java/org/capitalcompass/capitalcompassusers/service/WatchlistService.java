@@ -14,6 +14,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.security.Principal;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,25 +26,25 @@ public class WatchlistService {
 
     private final TickerService tickerService;
 
+    private static void clearWatchlistFromTickers(Watchlist watchlistToUpdate) {
+        watchlistToUpdate.getTickers().forEach(ticker ->
+                ticker.getWatchlists().remove(watchlistToUpdate));
+        watchlistToUpdate.getTickers().clear();
+    }
+
     public List<Watchlist> getWatchListsForUser(String userId) {
         return watchListRepository.findByUserId(userId);
     }
 
     @Transactional
     public Watchlist createWatchList(Principal principal, CreateWatchlistRequest request) {
-        String watchlistName = request.getName();
+        validateWatchlistName(request);
 
-        if (watchListRepository.existsByName(watchlistName)) {
-            throw new WatchlistAlreadyExistsException("Watchlist already exists with name : " + watchlistName);
+        Watchlist watchlist = buildWatchlist(principal, request);
+
+        for (Ticker tickerToAdd : request.getTickers()) {
+            addWatchlistToTicker(tickerToAdd, watchlist);
         }
-        Date date = new Date();
-        Watchlist watchlist = Watchlist.builder()
-                .userId(principal.getName())
-                .name(request.getName())
-                .tickers(request.getTickers())
-                .creationDate(date)
-                .lastUpdateDate(date)
-                .build();
         return watchListRepository.save(watchlist);
     }
 
@@ -52,17 +53,10 @@ public class WatchlistService {
         Watchlist watchlistToUpdate = getWatchListById(request.getId(), principal.getName());
         watchlistToUpdate.setName(request.getName());
 
-        watchlistToUpdate.getTickers().forEach(ticker ->
-                ticker.getWatchlists().remove(watchlistToUpdate));
-        watchlistToUpdate.getTickers().clear();
+        clearWatchlistFromTickers(watchlistToUpdate);
 
         for (Ticker tickerToAdd : request.getTickers()) {
-            Ticker ticker = tickerService.findTickerBySymbol(tickerToAdd.getSymbol())
-                    .orElseGet(() -> Ticker.builder()
-                            .symbol(tickerToAdd.getSymbol())
-                            .name(tickerToAdd.getName())
-                            .build());
-            ticker.getWatchlists().add(watchlistToUpdate);
+            Ticker ticker = addWatchlistToTicker(tickerToAdd, watchlistToUpdate);
             watchlistToUpdate.getTickers().add(ticker);
         }
 
@@ -76,5 +70,35 @@ public class WatchlistService {
             throw new WatchListNotOwnedByUserException("Watchlist was not created by the user");
         }
         return watchlist;
+    }
+
+    private void validateWatchlistName(CreateWatchlistRequest request) {
+        String watchlistName = request.getName();
+
+        if (watchListRepository.existsByName(watchlistName)) {
+            throw new WatchlistAlreadyExistsException("Watchlist already exists with name : " + watchlistName);
+        }
+    }
+
+    private Watchlist buildWatchlist(Principal principal, CreateWatchlistRequest request) {
+        Date date = new Date();
+        return Watchlist.builder()
+                .userId(principal.getName())
+                .name(request.getName())
+                .tickers(request.getTickers())
+                .creationDate(date)
+                .lastUpdateDate(date)
+                .build();
+    }
+
+    private Ticker addWatchlistToTicker(Ticker tickerToAdd, Watchlist watchlist) {
+        Ticker ticker = tickerService.findTickerBySymbol(tickerToAdd.getSymbol())
+                .orElseGet(() -> Ticker.builder()
+                        .symbol(tickerToAdd.getSymbol())
+                        .name(tickerToAdd.getName())
+                        .watchlists(new HashSet<>())
+                        .build());
+        ticker.getWatchlists().add(watchlist);
+        return ticker;
     }
 }
