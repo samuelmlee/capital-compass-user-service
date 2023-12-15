@@ -1,15 +1,19 @@
 package org.capitalcompass.capitalcompassusers.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 @Entity
 @Data
+@Builder
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class Ticker {
 
     @Id()
@@ -17,8 +21,13 @@ public class Ticker {
     private Long id;
 
     @NotNull
-    private String name;
+    private String symbol;
 
     @NotNull
-    private String symbol;
+    private String name;
+
+
+    @ManyToMany(mappedBy = "tickers")
+    private Set<Watchlist> watchlists;
+
 }

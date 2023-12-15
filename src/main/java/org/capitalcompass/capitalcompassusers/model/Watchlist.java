@@ -36,6 +36,10 @@ public class Watchlist {
     @NotNull
     private Date lastUpdateDate;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinTable(
+            joinColumns = @JoinColumn(name = "watchlist_id"),
+            inverseJoinColumns = @JoinColumn(name = "ticker_id")
+    )
     private Set<Ticker> tickers = new HashSet<>();
 }
