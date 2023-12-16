@@ -13,10 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.security.Principal;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -25,12 +22,6 @@ public class WatchlistService {
     private final WatchListRepository watchListRepository;
 
     private final TickerService tickerService;
-
-    private static void clearWatchlistFromTickers(Watchlist watchlistToUpdate) {
-        watchlistToUpdate.getTickers().forEach(ticker ->
-                ticker.getWatchlists().remove(watchlistToUpdate));
-        watchlistToUpdate.getTickers().clear();
-    }
 
     public List<Watchlist> getWatchListsForUser(String userId) {
         return watchListRepository.findByUserId(userId);
@@ -42,9 +33,8 @@ public class WatchlistService {
 
         Watchlist watchlist = buildWatchlist(principal, request);
 
-        for (Ticker tickerToAdd : request.getTickers()) {
-            addWatchlistToTicker(tickerToAdd, watchlist);
-        }
+        watchlist.getTickers().forEach(ticker -> ticker.getWatchlists().add(watchlist));
+
         return watchListRepository.save(watchlist);
     }
 
@@ -55,10 +45,11 @@ public class WatchlistService {
 
         clearWatchlistFromTickers(watchlistToUpdate);
 
-        for (Ticker tickerToAdd : request.getTickers()) {
-            Ticker ticker = addWatchlistToTicker(tickerToAdd, watchlistToUpdate);
-            watchlistToUpdate.getTickers().add(ticker);
-        }
+        Set<Ticker> updatedTickers = getTickersForRequest(request.getTickers());
+
+        watchlistToUpdate.setTickers(updatedTickers);
+
+        watchlistToUpdate.getTickers().forEach(ticker -> ticker.getWatchlists().add(watchlistToUpdate));
 
         return watchListRepository.save(watchlistToUpdate);
     }
@@ -72,6 +63,13 @@ public class WatchlistService {
         return watchlist;
     }
 
+    private void clearWatchlistFromTickers(Watchlist watchlistToUpdate) {
+        watchlistToUpdate.getTickers().forEach(ticker ->
+                ticker.getWatchlists().remove(watchlistToUpdate));
+        watchlistToUpdate.getTickers().clear();
+    }
+
+
     private void validateWatchlistName(CreateWatchlistRequest request) {
         String watchlistName = request.getName();
 
@@ -81,24 +79,30 @@ public class WatchlistService {
     }
 
     private Watchlist buildWatchlist(Principal principal, CreateWatchlistRequest request) {
+        Set<Ticker> tickers = getTickersForRequest(request.getTickers());
         Date date = new Date();
         return Watchlist.builder()
                 .userId(principal.getName())
                 .name(request.getName())
-                .tickers(request.getTickers())
+                .tickers(tickers)
                 .creationDate(date)
                 .lastUpdateDate(date)
                 .build();
     }
 
-    private Ticker addWatchlistToTicker(Ticker tickerToAdd, Watchlist watchlist) {
-        Ticker ticker = tickerService.findTickerBySymbol(tickerToAdd.getSymbol())
-                .orElseGet(() -> Ticker.builder()
-                        .symbol(tickerToAdd.getSymbol())
-                        .name(tickerToAdd.getName())
-                        .watchlists(new HashSet<>())
-                        .build());
-        ticker.getWatchlists().add(watchlist);
-        return ticker;
+    private Set<Ticker> getTickersForRequest(Set<Ticker> requestTickers) {
+        Set<Ticker> tickers = new HashSet<>();
+        for (Ticker watchlistTicker : requestTickers) {
+            Ticker ticker = tickerService.findTickerBySymbol(watchlistTicker.getSymbol())
+                    .orElseGet(() ->
+                            Ticker.builder()
+                                    .symbol(watchlistTicker.getSymbol())
+                                    .name(watchlistTicker.getName())
+                                    .watchlists(new HashSet<>())
+                                    .build()
+                    );
+            tickers.add(ticker);
+        }
+        return tickers;
     }
 }
