@@ -32,9 +32,7 @@ public class WatchlistService {
         validateWatchlistName(request);
 
         Watchlist watchlist = buildWatchlist(principal, request);
-
         watchlist.getTickers().forEach(ticker -> ticker.getWatchlists().add(watchlist));
-
         return watchListRepository.save(watchlist);
     }
 
@@ -46,11 +44,8 @@ public class WatchlistService {
         clearWatchlistFromTickers(watchlistToUpdate);
 
         Set<Ticker> updatedTickers = getTickersForRequest(request.getTickers());
-
         watchlistToUpdate.setTickers(updatedTickers);
-
         watchlistToUpdate.getTickers().forEach(ticker -> ticker.getWatchlists().add(watchlistToUpdate));
-
         return watchListRepository.save(watchlistToUpdate);
     }
 

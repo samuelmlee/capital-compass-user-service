@@ -20,7 +20,6 @@ public class WatchlistController {
     private final WatchlistService watchlistService;
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
     public List<Watchlist> getWatchlistsForUser(Principal principal) {
         String userSub = principal.getName();
         return watchlistService.getWatchListsForUser(userSub);
@@ -33,7 +32,6 @@ public class WatchlistController {
     }
 
     @PutMapping
-    @ResponseStatus(value = HttpStatus.OK)
     public Watchlist updateWatchlist(Principal principal, @Valid @RequestBody EditWatchlistRequest request) {
         return watchlistService.updateWatchlist(principal, request);
     }

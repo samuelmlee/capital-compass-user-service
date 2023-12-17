@@ -36,6 +36,11 @@ public class Ticker {
     @JsonIgnore
     private Set<Watchlist> watchlists = new HashSet<>();
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, symbol, name, watchlists);
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -43,10 +48,5 @@ public class Ticker {
         if (o == null || getClass() != o.getClass()) return false;
         Ticker ticker = (Ticker) o;
         return Objects.equals(symbol, ticker.symbol) && Objects.equals(name, ticker.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(symbol, name);
     }
 }
