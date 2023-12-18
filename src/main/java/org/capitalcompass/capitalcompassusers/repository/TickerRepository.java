@@ -1,6 +1,6 @@
 package org.capitalcompass.capitalcompassusers.repository;
 
-import org.capitalcompass.capitalcompassusers.model.Ticker;
+import org.capitalcompass.capitalcompassusers.entity.Ticker;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -1,7 +1,7 @@
 package org.capitalcompass.capitalcompassusers.service;
 
 import lombok.RequiredArgsConstructor;
-import org.capitalcompass.capitalcompassusers.model.Ticker;
+import org.capitalcompass.capitalcompassusers.entity.Ticker;
 import org.capitalcompass.capitalcompassusers.repository.TickerRepository;
 import org.springframework.stereotype.Service;
 

@@ -1,12 +1,13 @@
-package org.capitalcompass.capitalcompassusers.model;
+package org.capitalcompass.capitalcompassusers.dto;
 
 import lombok.Data;
+import org.capitalcompass.capitalcompassusers.entity.Ticker;
 
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Data
-public class CreateWatchlistRequest {
+public class CreateWatchlistRequestDTO {
 
     @NotNull
     private String name;

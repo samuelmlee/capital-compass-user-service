@@ -1,4 +1,4 @@
-package org.capitalcompass.capitalcompassusers.model;
+package org.capitalcompass.capitalcompassusers.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -28,17 +28,13 @@ public class Ticker {
     @NotBlank
     private String symbol;
 
-    @NotNull
-    private String name;
-
-
     @ManyToMany(mappedBy = "tickers")
     @JsonIgnore
     private Set<Watchlist> watchlists = new HashSet<>();
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, symbol, name, watchlists);
+        return Objects.hash(id, symbol, watchlists);
     }
 
 
@@ -47,6 +43,6 @@ public class Ticker {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Ticker ticker = (Ticker) o;
-        return Objects.equals(symbol, ticker.symbol) && Objects.equals(name, ticker.name);
+        return Objects.equals(symbol, ticker.symbol);
     }
 }

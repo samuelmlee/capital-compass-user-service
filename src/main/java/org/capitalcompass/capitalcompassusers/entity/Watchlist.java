@@ -1,4 +1,4 @@
-package org.capitalcompass.capitalcompassusers.model;
+package org.capitalcompass.capitalcompassusers.entity;
 
 
 import lombok.AllArgsConstructor;

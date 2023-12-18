@@ -1,9 +1,9 @@
 package org.capitalcompass.capitalcompassusers.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.capitalcompass.capitalcompassusers.model.CreateWatchlistRequest;
-import org.capitalcompass.capitalcompassusers.model.EditWatchlistRequest;
-import org.capitalcompass.capitalcompassusers.model.Watchlist;
+import org.capitalcompass.capitalcompassusers.dto.CreateWatchlistRequestDTO;
+import org.capitalcompass.capitalcompassusers.dto.EditWatchlistRequestDTO;
+import org.capitalcompass.capitalcompassusers.entity.Watchlist;
 import org.capitalcompass.capitalcompassusers.service.WatchlistService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -27,12 +27,12 @@ public class WatchlistController {
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
-    public Watchlist createWatchlist(Principal principal, @Valid @RequestBody CreateWatchlistRequest request) {
+    public Watchlist createWatchlist(Principal principal, @Valid @RequestBody CreateWatchlistRequestDTO request) {
         return watchlistService.createWatchList(principal, request);
     }
 
     @PutMapping
-    public Watchlist updateWatchlist(Principal principal, @Valid @RequestBody EditWatchlistRequest request) {
+    public Watchlist updateWatchlist(Principal principal, @Valid @RequestBody EditWatchlistRequestDTO request) {
         return watchlistService.updateWatchlist(principal, request);
     }
 
