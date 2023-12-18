@@ -6,7 +6,6 @@ import org.capitalcompass.capitalcompassusers.dto.CreateWatchlistRequestDTO;
 import org.capitalcompass.capitalcompassusers.dto.EditWatchlistRequestDTO;
 import org.capitalcompass.capitalcompassusers.entity.Ticker;
 import org.capitalcompass.capitalcompassusers.entity.Watchlist;
-import org.capitalcompass.capitalcompassusers.exception.TickerSymbolNotValidatedException;
 import org.capitalcompass.capitalcompassusers.exception.WatchListNotOwnedByUserException;
 import org.capitalcompass.capitalcompassusers.exception.WatchlistAlreadyExistsException;
 import org.capitalcompass.capitalcompassusers.repository.WatchListRepository;
@@ -16,6 +15,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.security.Principal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +36,8 @@ public class WatchlistService {
         validateWatchlistName(request);
 
         Watchlist watchlist = buildWatchlist(principal, request);
-        watchlist.getTickers().forEach(ticker -> ticker.getWatchlists().add(watchlist));
+        Set<Ticker> tickers = getTickersForRequest(request.getTickerSymbols());
+        tickers.forEach(watchlist::addTicker);
         return watchListRepository.save(watchlist);
     }
 
@@ -45,11 +46,10 @@ public class WatchlistService {
         Watchlist watchlistToUpdate = getWatchListById(request.getId(), principal.getName());
         watchlistToUpdate.setName(request.getName());
 
-        clearWatchlistFromTickers(watchlistToUpdate);
+        watchlistToUpdate.clearTickers();
 
-        Set<Ticker> updatedTickers = getTickersForRequest(request.getTickers());
-        watchlistToUpdate.setTickers(updatedTickers);
-        watchlistToUpdate.getTickers().forEach(ticker -> ticker.getWatchlists().add(watchlistToUpdate));
+        Set<Ticker> updatedTickers = getTickersForRequest(request.getTickerSymbols());
+        updatedTickers.forEach(watchlistToUpdate::addTicker);
         return watchListRepository.save(watchlistToUpdate);
     }
 
@@ -62,13 +62,6 @@ public class WatchlistService {
         return watchlist;
     }
 
-    private void clearWatchlistFromTickers(Watchlist watchlistToUpdate) {
-        watchlistToUpdate.getTickers().forEach(ticker ->
-                ticker.getWatchlists().remove(watchlistToUpdate));
-        watchlistToUpdate.getTickers().clear();
-    }
-
-
     private void validateWatchlistName(CreateWatchlistRequestDTO request) {
         String watchlistName = request.getName();
 
@@ -78,36 +71,28 @@ public class WatchlistService {
     }
 
     private Watchlist buildWatchlist(Principal principal, CreateWatchlistRequestDTO request) {
-        Set<Ticker> tickers = getTickersForRequest(request.getTickers());
         Date date = new Date();
         return Watchlist.builder()
                 .userId(principal.getName())
                 .name(request.getName())
-                .tickers(tickers)
+                .tickers(new HashSet<>())
                 .creationDate(date)
                 .lastUpdateDate(date)
                 .build();
     }
 
-    private Set<Ticker> getTickersForRequest(Set<Ticker> requestTickers) {
-        Set<Ticker> tickers = new HashSet<>();
-        for (Ticker watchlistTicker : requestTickers) {
-            String tickerSymbol = watchlistTicker.getSymbol();
-            Ticker ticker = tickerService.findTickerBySymbol(tickerSymbol)
-                    .orElseGet(() -> {
-                                Boolean validated = stocksServiceClient.validateTickerSymbol(tickerSymbol);
+    private Set<Ticker> getTickersForRequest(Set<String> tickerSymbols) {
 
-                                if (!validated) {
-                                    throw new TickerSymbolNotValidatedException("Ticker Symbol not Validated : " + tickerSymbol);
-                                }
-                                return Ticker.builder()
-                                        .symbol(watchlistTicker.getSymbol())
-                                        .watchlists(new HashSet<>())
-                                        .build();
-                            }
-                    );
-            tickers.add(ticker);
-        }
-        return tickers;
+        Set<String> validatedSymbols = stocksServiceClient.validateBatchTickers(tickerSymbols);
+
+        return tickerSymbols.stream()
+                .filter(validatedSymbols::contains)
+                .map(ticker -> tickerService.findTickerBySymbol(ticker)
+                        .orElseGet(() -> Ticker.builder()
+                                .symbol(ticker)
+                                .watchlists(new HashSet<>())
+                                .build())
+                )
+                .collect(Collectors.toSet());
     }
 }

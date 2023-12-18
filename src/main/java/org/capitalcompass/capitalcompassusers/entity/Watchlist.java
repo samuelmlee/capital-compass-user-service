@@ -1,10 +1,7 @@
 package org.capitalcompass.capitalcompassusers.entity;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -40,12 +37,31 @@ public class Watchlist {
     @NotNull
     private Date lastUpdateDate;
 
+    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(
             joinColumns = @JoinColumn(name = "watchlist_id"),
             inverseJoinColumns = @JoinColumn(name = "ticker_id")
     )
     private Set<Ticker> tickers = new HashSet<>();
+
+
+    public void addTicker(Ticker ticker) {
+        tickers.add(ticker);
+        ticker.addWatchlist(this);
+    }
+
+    public void removeTicker(Ticker ticker) {
+        tickers.remove(ticker);
+        ticker.removeWatchlist(this);
+    }
+
+    public void clearTickers() {
+        tickers.forEach(ticker -> ticker.removeWatchlist(this));
+        tickers.clear();
+    }
+
 
     @Override
     public boolean equals(Object o) {

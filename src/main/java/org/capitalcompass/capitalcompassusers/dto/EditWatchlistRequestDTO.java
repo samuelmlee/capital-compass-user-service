@@ -1,7 +1,6 @@
 package org.capitalcompass.capitalcompassusers.dto;
 
 import lombok.Data;
-import org.capitalcompass.capitalcompassusers.entity.Ticker;
 
 import javax.validation.constraints.NotNull;
 import java.util.Set;
@@ -15,5 +14,5 @@ public class EditWatchlistRequestDTO {
     @NotNull
     private String name;
 
-    private Set<Ticker> tickers;
+    private Set<String> tickerSymbols;
 }

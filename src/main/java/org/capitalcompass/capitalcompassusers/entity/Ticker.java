@@ -1,10 +1,7 @@
 package org.capitalcompass.capitalcompassusers.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -28,9 +25,19 @@ public class Ticker {
     @NotBlank
     private String symbol;
 
+    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
     @ManyToMany(mappedBy = "tickers")
     @JsonIgnore
     private Set<Watchlist> watchlists = new HashSet<>();
+
+    public void addWatchlist(Watchlist watchlist) {
+        watchlists.add(watchlist);
+    }
+
+    public void removeWatchlist(Watchlist watchlist) {
+        watchlists.remove(watchlist);
+    }
 
     @Override
     public int hashCode() {
