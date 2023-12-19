@@ -27,6 +27,7 @@ public class WatchlistService {
 
     private final StocksServiceClient stocksServiceClient;
 
+    @Transactional
     public List<Watchlist> getWatchListsForUser(String userId) {
         return watchListRepository.findByUserId(userId);
     }

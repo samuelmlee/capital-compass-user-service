@@ -1,7 +1,10 @@
 package org.capitalcompass.capitalcompassusers.entity;
 
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -37,8 +40,8 @@ public class Watchlist {
     @NotNull
     private Date lastUpdateDate;
 
-    @Setter(AccessLevel.NONE)
-    @Getter(AccessLevel.NONE)
+    //    @Setter(AccessLevel.NONE)
+//    @Getter(AccessLevel.NONE)
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(
             joinColumns = @JoinColumn(name = "watchlist_id"),
