@@ -3,9 +3,12 @@ package org.capitalcompass.capitalcompassusers.repository;
 import org.capitalcompass.capitalcompassusers.entity.Ticker;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface TickerRepository extends JpaRepository<Ticker, Long> {
 
-    Optional<Ticker> findBySymbol(String symbol);
+
+    Boolean existsBySymbol(String symbol);
+
+    List<Ticker> findAllBySymbolIn(List<String> symbols);
 }

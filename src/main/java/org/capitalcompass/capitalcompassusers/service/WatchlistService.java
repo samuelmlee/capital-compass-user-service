@@ -37,7 +37,7 @@ public class WatchlistService {
         validateWatchlistName(request);
 
         Watchlist watchlist = buildWatchlist(principal, request);
-        Set<Ticker> tickers = getTickersForWatchlist(request.getTickerSymbols());
+        List<Ticker> tickers = getTickersForWatchlist(request.getTickerSymbols());
         tickers.forEach(watchlist::addTicker);
         return watchListRepository.save(watchlist);
     }
@@ -49,7 +49,7 @@ public class WatchlistService {
 
         watchlistToUpdate.clearTickers();
 
-        Set<Ticker> updatedTickers = getTickersForWatchlist(request.getTickerSymbols());
+        List<Ticker> updatedTickers = getTickersForWatchlist(request.getTickerSymbols());
         updatedTickers.forEach(watchlistToUpdate::addTicker);
         return watchListRepository.save(watchlistToUpdate);
     }
@@ -82,18 +82,22 @@ public class WatchlistService {
                 .build();
     }
 
-    private Set<Ticker> getTickersForWatchlist(Set<String> tickerSymbols) {
+    private List<Ticker> getTickersForWatchlist(Set<String> tickerSymbols) {
 
-        Set<String> registeredSymbols = stocksServiceClient.registerBatchTickers(tickerSymbols);
+        List<String> registeredSymbols = new ArrayList<>(stocksServiceClient.registerBatchTickers(tickerSymbols));
 
-        return tickerSymbols.stream()
+        List<Ticker> newTickersToSave = tickerSymbols.stream()
                 .filter(registeredSymbols::contains)
-                .map(ticker -> tickerService.findTickerBySymbol(ticker)
-                        .orElseGet(() -> Ticker.builder()
-                                .symbol(ticker)
+                .filter(ticker -> !tickerService.existsBySymbol(ticker))
+                .map(symbol ->
+                        Ticker.builder()
+                                .symbol(symbol)
                                 .watchlists(new HashSet<>())
-                                .build())
-                )
-                .collect(Collectors.toSet());
+                                .build()
+                ).collect(Collectors.toList());
+
+        tickerService.saveTickers(newTickersToSave);
+
+        return tickerService.findTickersBySymbols(registeredSymbols);
     }
 }

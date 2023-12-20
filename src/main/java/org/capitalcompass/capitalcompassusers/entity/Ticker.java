@@ -21,7 +21,7 @@ public class Ticker {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotNull
+    @NotNull(message = "Symbol must not be blank for Ticker")
     @NotBlank
     private String symbol;
 
