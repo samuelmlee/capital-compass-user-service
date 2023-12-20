@@ -84,8 +84,13 @@ public class WatchlistService {
 
     private List<Ticker> getTickersForWatchlist(Set<String> tickerSymbols) {
 
-        List<String> registeredSymbols = new ArrayList<>(stocksServiceClient.registerBatchTickers(tickerSymbols));
+        Set<String> registeredSymbols = stocksServiceClient.registerBatchTickers(tickerSymbols);
+        saveNewTickers(tickerSymbols, registeredSymbols);
 
+        return tickerService.findTickersBySymbols(registeredSymbols);
+    }
+
+    private void saveNewTickers(Set<String> tickerSymbols, Set<String> registeredSymbols) {
         List<Ticker> newTickersToSave = tickerSymbols.stream()
                 .filter(registeredSymbols::contains)
                 .filter(ticker -> !tickerService.existsBySymbol(ticker))
@@ -97,7 +102,5 @@ public class WatchlistService {
                 ).collect(Collectors.toList());
 
         tickerService.saveTickers(newTickersToSave);
-
-        return tickerService.findTickersBySymbols(registeredSymbols);
     }
 }

@@ -6,6 +6,7 @@ import org.capitalcompass.capitalcompassusers.repository.TickerRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +22,7 @@ public class TickerService {
         tickerRepository.saveAllAndFlush(tickers);
     }
 
-    public List<Ticker> findTickersBySymbols(List<String> symbols) {
+    public List<Ticker> findTickersBySymbols(Set<String> symbols) {
         return tickerRepository.findAllBySymbolIn(symbols);
     }
 }
