@@ -24,7 +24,7 @@ public class StocksServiceClient {
 
     private final String STOCKS_SERVICE_URL = "http://STOCKS/v1/stocks/reference/tickers";
 
-    public Set<String> validateBatchTickers(Set<String> tickerSymbols) throws TickerSymbolNotValidatedException {
+    public Set<String> registerBatchTickers(Set<String> tickerSymbols) throws TickerSymbolNotValidatedException {
 
         ValidateTickerRequestDTO request = ValidateTickerRequestDTO.builder()
                 .symbols(tickerSymbols)
@@ -32,7 +32,7 @@ public class StocksServiceClient {
         HttpEntity<ValidateTickerRequestDTO> entity = new HttpEntity<>(request);
 
         ResponseEntity<Set<String>> response = restTemplate.exchange(
-                STOCKS_SERVICE_URL, HttpMethod.POST, entity, new ParameterizedTypeReference<>() {
+                STOCKS_SERVICE_URL + "/register", HttpMethod.POST, entity, new ParameterizedTypeReference<Set<String>>() {
                 });
 
         return response.getBody();

@@ -37,7 +37,7 @@ public class WatchlistService {
         validateWatchlistName(request);
 
         Watchlist watchlist = buildWatchlist(principal, request);
-        Set<Ticker> tickers = getTickersForRequest(request.getTickerSymbols());
+        Set<Ticker> tickers = getTickersForWatchlist(request.getTickerSymbols());
         tickers.forEach(watchlist::addTicker);
         return watchListRepository.save(watchlist);
     }
@@ -49,7 +49,7 @@ public class WatchlistService {
 
         watchlistToUpdate.clearTickers();
 
-        Set<Ticker> updatedTickers = getTickersForRequest(request.getTickerSymbols());
+        Set<Ticker> updatedTickers = getTickersForWatchlist(request.getTickerSymbols());
         updatedTickers.forEach(watchlistToUpdate::addTicker);
         return watchListRepository.save(watchlistToUpdate);
     }
@@ -82,12 +82,12 @@ public class WatchlistService {
                 .build();
     }
 
-    private Set<Ticker> getTickersForRequest(Set<String> tickerSymbols) {
+    private Set<Ticker> getTickersForWatchlist(Set<String> tickerSymbols) {
 
-        Set<String> validatedSymbols = stocksServiceClient.validateBatchTickers(tickerSymbols);
+        Set<String> registeredSymbols = stocksServiceClient.registerBatchTickers(tickerSymbols);
 
         return tickerSymbols.stream()
-                .filter(validatedSymbols::contains)
+                .filter(registeredSymbols::contains)
                 .map(ticker -> tickerService.findTickerBySymbol(ticker)
                         .orElseGet(() -> Ticker.builder()
                                 .symbol(ticker)
