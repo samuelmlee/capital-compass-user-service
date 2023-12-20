@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,18 +32,19 @@ public class WatchlistService {
     }
 
     @Transactional
-    public Watchlist createWatchList(Principal principal, CreateWatchlistRequestDTO request) {
+    public Watchlist createWatchList(String userSub, CreateWatchlistRequestDTO request) {
         validateWatchlistName(request);
 
-        Watchlist watchlist = buildWatchlist(principal, request);
+        Watchlist watchlist = buildWatchlist(userSub, request);
         List<Ticker> tickers = getTickersForWatchlist(request.getTickerSymbols());
         tickers.forEach(watchlist::addTicker);
         return watchListRepository.save(watchlist);
     }
 
     @Transactional
-    public Watchlist updateWatchlist(Principal principal, EditWatchlistRequestDTO request) {
-        Watchlist watchlistToUpdate = getWatchListById(request.getId(), principal.getName());
+    public Watchlist updateWatchlist(String userSub, EditWatchlistRequestDTO request) {
+        Watchlist watchlistToUpdate = getWatchListById(request.getId(), userSub);
+
         watchlistToUpdate.setName(request.getName());
 
         watchlistToUpdate.clearTickers();
@@ -52,6 +52,12 @@ public class WatchlistService {
         List<Ticker> updatedTickers = getTickersForWatchlist(request.getTickerSymbols());
         updatedTickers.forEach(watchlistToUpdate::addTicker);
         return watchListRepository.save(watchlistToUpdate);
+    }
+
+    @Transactional
+    public void deleteWatchlist(String userSub, Long watchlistId) {
+        Watchlist watchlistToDelete = getWatchListById(watchlistId, userSub);
+        watchListRepository.delete(watchlistToDelete);
     }
 
     private Watchlist getWatchListById(Long id, String userId) {
@@ -71,10 +77,10 @@ public class WatchlistService {
         }
     }
 
-    private Watchlist buildWatchlist(Principal principal, CreateWatchlistRequestDTO request) {
+    private Watchlist buildWatchlist(String userSub, CreateWatchlistRequestDTO request) {
         Date date = new Date();
         return Watchlist.builder()
-                .userId(principal.getName())
+                .userId(userSub)
                 .name(request.getName())
                 .tickers(new HashSet<>())
                 .creationDate(date)
@@ -103,4 +109,6 @@ public class WatchlistService {
 
         tickerService.saveTickers(newTickersToSave);
     }
+
+
 }

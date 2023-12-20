@@ -28,12 +28,21 @@ public class WatchlistController {
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
     public Watchlist createWatchlist(Principal principal, @Valid @RequestBody CreateWatchlistRequestDTO request) {
-        return watchlistService.createWatchList(principal, request);
+        String userSub = principal.getName();
+        return watchlistService.createWatchList(userSub, request);
     }
 
     @PutMapping
     public Watchlist updateWatchlist(Principal principal, @Valid @RequestBody EditWatchlistRequestDTO request) {
-        return watchlistService.updateWatchlist(principal, request);
+        String userSub = principal.getName();
+        return watchlistService.updateWatchlist(userSub, request);
+    }
+
+    @DeleteMapping("/{watchlistId}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteWatchlist(Principal principal, @PathVariable Long watchlistId) {
+        String userSub = principal.getName();
+        watchlistService.deleteWatchlist(userSub, watchlistId);
     }
 
 
