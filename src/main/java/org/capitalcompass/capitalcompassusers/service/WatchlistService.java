@@ -6,12 +6,13 @@ import org.capitalcompass.capitalcompassusers.dto.CreateWatchlistRequestDTO;
 import org.capitalcompass.capitalcompassusers.dto.EditWatchlistRequestDTO;
 import org.capitalcompass.capitalcompassusers.entity.Ticker;
 import org.capitalcompass.capitalcompassusers.entity.Watchlist;
+import org.capitalcompass.capitalcompassusers.exception.TickerSymbolsNotValidatedException;
 import org.capitalcompass.capitalcompassusers.exception.WatchListNotOwnedByUserException;
 import org.capitalcompass.capitalcompassusers.exception.WatchlistAlreadyExistsException;
+import org.capitalcompass.capitalcompassusers.exception.WatchlistNotFoundException;
 import org.capitalcompass.capitalcompassusers.repository.WatchListRepository;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -61,7 +62,8 @@ public class WatchlistService {
     }
 
     private Watchlist getWatchListById(Long id, String userId) {
-        Watchlist watchlist = watchListRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        Watchlist watchlist = watchListRepository.findById(id)
+                .orElseThrow(() -> new WatchlistNotFoundException("Watchlist not found for Id :" + id));
 
         if (!Objects.equals(watchlist.getUserId(), userId)) {
             throw new WatchListNotOwnedByUserException("Watchlist was not created by the user");
@@ -89,16 +91,22 @@ public class WatchlistService {
     }
 
     private List<Ticker> getTickersForWatchlist(Set<String> tickerSymbols) {
-
         Set<String> registeredSymbols = stocksServiceClient.registerBatchTickers(tickerSymbols);
-        saveNewTickers(tickerSymbols, registeredSymbols);
+
+        Set<String> unvalidatedSymbols = tickerSymbols.stream()
+                .filter(ticker -> !registeredSymbols.contains(ticker)).collect(Collectors.toSet());
+
+        if (!unvalidatedSymbols.isEmpty()) {
+            throw new TickerSymbolsNotValidatedException("The following ticker symbols for the watchlist could not be validated :" + unvalidatedSymbols);
+        }
+
+        saveNewTickers(registeredSymbols);
 
         return tickerService.findTickersBySymbols(registeredSymbols);
     }
 
-    private void saveNewTickers(Set<String> tickerSymbols, Set<String> registeredSymbols) {
-        List<Ticker> newTickersToSave = tickerSymbols.stream()
-                .filter(registeredSymbols::contains)
+    private void saveNewTickers(Set<String> registeredSymbols) {
+        List<Ticker> newTickersToSave = registeredSymbols.stream()
                 .filter(ticker -> !tickerService.existsBySymbol(ticker))
                 .map(symbol ->
                         Ticker.builder()
