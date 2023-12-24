@@ -91,7 +91,7 @@ public class WatchlistService {
     }
 
     private List<Ticker> getTickersForWatchlist(Set<String> tickerSymbols) {
-        Set<String> registeredSymbols = stocksServiceClient.registerBatchTickers(tickerSymbols);
+        Set<String> registeredSymbols = stocksServiceClient.registerTickers(tickerSymbols);
 
         Set<String> unvalidatedSymbols = tickerSymbols.stream()
                 .filter(ticker -> !registeredSymbols.contains(ticker)).collect(Collectors.toSet());

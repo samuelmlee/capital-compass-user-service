@@ -25,7 +25,7 @@ public class StocksServiceClient {
 
     private final String STOCKS_SERVICE_URL = "http://STOCKS/v1/stocks/reference/tickers";
 
-    public Set<String> registerBatchTickers(Set<String> tickerSymbols) {
+    public Set<String> registerTickers(Set<String> tickerSymbols) {
 
         ValidateTickerRequestDTO request = ValidateTickerRequestDTO.builder()
                 .symbols(tickerSymbols)
