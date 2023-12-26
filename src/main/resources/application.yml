@@ -4,8 +4,11 @@ server:
 spring:
   application:
     name: users
-  profiles:
-    active: deploy
+  config:
+    import:
+      - aws-secretsmanager:/secret/users/
+      - aws-parameterstore:/config/users/
+      - aws-parameterstore:/config/application/
   datasource:
     driver: com.mysql.cj.jdbc.Driver
   jpa:
@@ -18,12 +21,12 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: https://auth.capitalcompass.org:8443/realms/capitalcompass
+          issuer-uri: ${jwt.issuer.uri}
 
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8010/eureka
+      defaultZone: ${eureka.default.zone}
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 

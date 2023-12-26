@@ -1,8 +1,0 @@
-spring:
-  config:
-    import: aws-parameterstore:/config/users_deploy/
-
-logging:
-  level:
-    com.amazonaws: DEBUG
-    org.springframework.cloud: DEBUG
