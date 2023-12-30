@@ -11,6 +11,12 @@ java {
     sourceCompatibility = '11'
 }
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'org/capitalcompass/capitalcompassusers/CapitalCompassUsersApplication'
+    }
+}
+
 repositories {
     mavenCentral()
 }
