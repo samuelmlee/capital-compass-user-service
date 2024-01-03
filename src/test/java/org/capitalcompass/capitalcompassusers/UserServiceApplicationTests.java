@@ -6,7 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 @Disabled
-class CapitalCompassUsersApplicationTests {
+class UserServiceApplicationTests {
 
     @Test
     void contextLoads() {
