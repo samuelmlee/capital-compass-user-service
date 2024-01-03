@@ -1,10 +1,10 @@
-package org.capitalcompass.capitalcompassusers.controller;
+package org.capitalcompass.userservice.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.capitalcompass.capitalcompassusers.dto.CreateWatchlistRequestDTO;
-import org.capitalcompass.capitalcompassusers.dto.EditWatchlistRequestDTO;
-import org.capitalcompass.capitalcompassusers.entity.Watchlist;
-import org.capitalcompass.capitalcompassusers.service.WatchlistService;
+import org.capitalcompass.userservice.dto.CreateWatchlistRequestDTO;
+import org.capitalcompass.userservice.dto.EditWatchlistRequestDTO;
+import org.capitalcompass.userservice.entity.Watchlist;
+import org.capitalcompass.userservice.service.WatchlistService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 

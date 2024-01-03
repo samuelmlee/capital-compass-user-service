@@ -1,6 +1,6 @@
-package org.capitalcompass.capitalcompassusers.repository;
+package org.capitalcompass.userservice.repository;
 
-import org.capitalcompass.capitalcompassusers.entity.Ticker;
+import org.capitalcompass.userservice.entity.Ticker;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

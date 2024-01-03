@@ -1,16 +1,16 @@
-package org.capitalcompass.capitalcompassusers.service;
+package org.capitalcompass.userservice.service;
 
 import lombok.RequiredArgsConstructor;
-import org.capitalcompass.capitalcompassusers.client.StocksServiceClient;
-import org.capitalcompass.capitalcompassusers.dto.CreateWatchlistRequestDTO;
-import org.capitalcompass.capitalcompassusers.dto.EditWatchlistRequestDTO;
-import org.capitalcompass.capitalcompassusers.entity.Ticker;
-import org.capitalcompass.capitalcompassusers.entity.Watchlist;
-import org.capitalcompass.capitalcompassusers.exception.TickerSymbolsNotValidatedException;
-import org.capitalcompass.capitalcompassusers.exception.WatchListNotOwnedByUserException;
-import org.capitalcompass.capitalcompassusers.exception.WatchlistAlreadyExistsException;
-import org.capitalcompass.capitalcompassusers.exception.WatchlistNotFoundException;
-import org.capitalcompass.capitalcompassusers.repository.WatchListRepository;
+import org.capitalcompass.userservice.client.StocksServiceClient;
+import org.capitalcompass.userservice.dto.CreateWatchlistRequestDTO;
+import org.capitalcompass.userservice.dto.EditWatchlistRequestDTO;
+import org.capitalcompass.userservice.entity.Ticker;
+import org.capitalcompass.userservice.entity.Watchlist;
+import org.capitalcompass.userservice.exception.TickerSymbolsNotValidatedException;
+import org.capitalcompass.userservice.exception.WatchListNotOwnedByUserException;
+import org.capitalcompass.userservice.exception.WatchlistAlreadyExistsException;
+import org.capitalcompass.userservice.exception.WatchlistNotFoundException;
+import org.capitalcompass.userservice.repository.WatchListRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;

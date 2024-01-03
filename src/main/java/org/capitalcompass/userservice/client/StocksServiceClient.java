@@ -1,9 +1,9 @@
-package org.capitalcompass.capitalcompassusers.client;
+package org.capitalcompass.userservice.client;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.capitalcompass.capitalcompassusers.dto.ValidateTickerRequestDTO;
-import org.capitalcompass.capitalcompassusers.exception.TickerSymbolsNotValidatedException;
+import org.capitalcompass.userservice.dto.ValidateTickerRequestDTO;
+import org.capitalcompass.userservice.exception.TickerSymbolsNotValidatedException;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;

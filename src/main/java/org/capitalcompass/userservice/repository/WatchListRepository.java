@@ -1,6 +1,6 @@
-package org.capitalcompass.capitalcompassusers.repository;
+package org.capitalcompass.userservice.repository;
 
-import org.capitalcompass.capitalcompassusers.entity.Watchlist;
+import org.capitalcompass.userservice.entity.Watchlist;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

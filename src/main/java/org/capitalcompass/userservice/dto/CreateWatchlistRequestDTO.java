@@ -1,4 +1,4 @@
-package org.capitalcompass.capitalcompassusers.dto;
+package org.capitalcompass.userservice.dto;
 
 import lombok.Data;
 
@@ -6,10 +6,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Data
-public class EditWatchlistRequestDTO {
-
-    @NotNull
-    private Long id;
+public class CreateWatchlistRequestDTO {
 
     @NotNull
     private String name;

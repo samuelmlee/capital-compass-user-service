@@ -1,4 +1,4 @@
-package org.capitalcompass.capitalcompassusers.exception;
+package org.capitalcompass.userservice.exception;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

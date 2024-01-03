@@ -1,8 +1,8 @@
-package org.capitalcompass.capitalcompassusers.service;
+package org.capitalcompass.userservice.service;
 
 import lombok.RequiredArgsConstructor;
-import org.capitalcompass.capitalcompassusers.entity.Ticker;
-import org.capitalcompass.capitalcompassusers.repository.TickerRepository;
+import org.capitalcompass.userservice.entity.Ticker;
+import org.capitalcompass.userservice.repository.TickerRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

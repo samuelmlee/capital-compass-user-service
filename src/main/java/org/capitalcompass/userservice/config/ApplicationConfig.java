@@ -1,4 +1,4 @@
-package org.capitalcompass.capitalcompassusers.config;
+package org.capitalcompass.userservice.config;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;

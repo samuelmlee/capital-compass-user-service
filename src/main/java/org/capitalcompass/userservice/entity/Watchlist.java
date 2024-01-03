@@ -1,4 +1,4 @@
-package org.capitalcompass.capitalcompassusers.entity;
+package org.capitalcompass.userservice.entity;
 
 
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package org.capitalcompass.capitalcompassusers.config;
+package org.capitalcompass.userservice.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
