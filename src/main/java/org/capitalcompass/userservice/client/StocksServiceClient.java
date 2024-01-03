@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.capitalcompass.userservice.dto.ValidateTickerRequestDTO;
 import org.capitalcompass.userservice.exception.TickerSymbolsNotValidatedException;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -20,12 +20,13 @@ import java.util.Set;
 @Log4j2
 public class StocksServiceClient {
 
-    @LoadBalanced
     private final RestTemplate restTemplate;
 
-    private final String STOCKS_SERVICE_URL = "http://STOCKS/v1/stocks/reference/tickers";
+    @Value("${stock.service.uri}")
+    private String stockServiceUri;
 
     public Set<String> registerTickers(Set<String> tickerSymbols) {
+        String STOCKS_SERVICE_URL =  stockServiceUri + "/v1/stocks/reference/tickers";
 
         ValidateTickerRequestDTO request = ValidateTickerRequestDTO.builder()
                 .symbols(tickerSymbols)

@@ -13,7 +13,7 @@ java {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'org/capitalcompass/capitalcompassusers/CapitalCompassUsersApplication'
+        attributes 'Main-Class': 'org/capitalcompass/userservice/UserServiceApplication'
     }
 }
 
@@ -35,9 +35,7 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
 
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
