@@ -21,7 +21,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${jwt.issuer.uri}
+          issuer-uri: ${keycloak.issuer.uri}
 
 management:
   endpoints:
