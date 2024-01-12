@@ -17,7 +17,7 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.
                 authorizeHttpRequests(authorize -> authorize
-                        .antMatchers("/actuator/**").permitAll()
+                        .antMatchers("/actuator/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                 .sessionManagement(sessionManagement -> sessionManagement
