@@ -43,7 +43,7 @@ Once the service is running, it will be accessible via an API Gateway, for examp
 
 **API Endpoints:**
 
-Endpoints for managing portfolios and watchlists will be listed at `http://localhost:8085/swagger-ui.html`. These
+Endpoints for managing portfolios and watch lists will be listed at `http://localhost:8085/swagger-ui.html`. These
 include:
 
 - `GET /v1/users/watchlists`: Get user watch lists
