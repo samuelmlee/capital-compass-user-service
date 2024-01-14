@@ -15,6 +15,10 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Set;
 
+/**
+ * Client class to call Stocks Service APIs.
+ * This class provides methods to communicate with the Stocks Service.
+ */
 @Component
 @RequiredArgsConstructor
 @Log4j2
@@ -25,8 +29,16 @@ public class StocksServiceClient {
     @Value("${stock.service.uri}")
     private String stockServiceUri;
 
+    /**
+     * Registers a set of ticker symbols with the Stocks Service.
+     *
+     * @param tickerSymbols The set of ticker symbols to register.
+     * @return A set of strings representing the registered ticker symbols.
+     * @throws TickerSymbolsNotValidatedException if there is an error in registering
+     *                                            the ticker symbols or in communication with the stocks service.
+     */
     public Set<String> registerTickers(Set<String> tickerSymbols) {
-        String STOCKS_SERVICE_URL =  stockServiceUri + "/v1/stocks/reference/tickers";
+        String STOCKS_SERVICE_URL = stockServiceUri + "/v1/stocks/reference/tickers";
 
         ValidateTickerRequestDTO request = ValidateTickerRequestDTO.builder()
                 .symbols(tickerSymbols)
