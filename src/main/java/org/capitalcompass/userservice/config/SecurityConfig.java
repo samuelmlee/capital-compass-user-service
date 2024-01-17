@@ -18,7 +18,7 @@ public class SecurityConfig {
         return http.
                 authorizeHttpRequests(authorize -> authorize
                         .antMatchers("/actuator/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .antMatchers("/admin-users").hasRole("ADMIN")
+                        .antMatchers("/v1/users/admin-users").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                 .sessionManagement(sessionManagement -> sessionManagement
