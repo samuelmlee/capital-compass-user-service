@@ -6,7 +6,10 @@ import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Data
-public class CreateWatchlistRequestDTO {
+public class EditWatchListRequestDTO {
+
+    @NotNull
+    private Long id;
 
     @NotNull
     private String name;

@@ -2,14 +2,14 @@ package org.capitalcompass.userservice.service;
 
 import lombok.RequiredArgsConstructor;
 import org.capitalcompass.userservice.client.StocksServiceClient;
-import org.capitalcompass.userservice.dto.CreateWatchlistRequestDTO;
-import org.capitalcompass.userservice.dto.EditWatchlistRequestDTO;
+import org.capitalcompass.userservice.dto.CreateWatchListRequestDTO;
+import org.capitalcompass.userservice.dto.EditWatchListRequestDTO;
 import org.capitalcompass.userservice.entity.Ticker;
 import org.capitalcompass.userservice.entity.Watchlist;
 import org.capitalcompass.userservice.exception.TickerSymbolsNotValidatedException;
+import org.capitalcompass.userservice.exception.WatchListAlreadyExistsException;
+import org.capitalcompass.userservice.exception.WatchListNotFoundException;
 import org.capitalcompass.userservice.exception.WatchListNotOwnedByUserException;
-import org.capitalcompass.userservice.exception.WatchlistAlreadyExistsException;
-import org.capitalcompass.userservice.exception.WatchlistNotFoundException;
 import org.capitalcompass.userservice.repository.WatchListRepository;
 import org.springframework.stereotype.Service;
 
@@ -49,10 +49,10 @@ public class WatchlistService {
      * @param userSub The user identifier.
      * @param request The DTO containing details for creating a new watchlist.
      * @return The newly created Watchlist entity.
-     * @throws WatchlistAlreadyExistsException if a watchlist with the same name already exists.
+     * @throws WatchListAlreadyExistsException if a watchlist with the same name already exists.
      */
     @Transactional
-    public Watchlist createWatchList(String userSub, CreateWatchlistRequestDTO request) {
+    public Watchlist createWatchList(String userSub, CreateWatchListRequestDTO request) {
         validateWatchlistName(request.getName(), userSub);
 
         Watchlist watchlist = buildWatchlist(userSub, request);
@@ -67,11 +67,11 @@ public class WatchlistService {
      * @param userSub The user identifier.
      * @param request The DTO containing updated details for the watchlist.
      * @return The updated Watchlist entity.
-     * @throws WatchlistNotFoundException       if the watchlist to update is not found.
+     * @throws WatchListNotFoundException       if the watchlist to update is not found.
      * @throws WatchListNotOwnedByUserException if the watchlist is not owned by the user.
      */
     @Transactional
-    public Watchlist updateWatchlist(String userSub, EditWatchlistRequestDTO request) {
+    public Watchlist updateWatchlist(String userSub, EditWatchListRequestDTO request) {
         Watchlist watchlistToUpdate = getWatchListById(request.getId(), userSub);
 
         watchlistToUpdate.setName(request.getName());
@@ -88,7 +88,7 @@ public class WatchlistService {
      *
      * @param userSub     The user identifier.
      * @param watchlistId The ID of the watchlist to be deleted.
-     * @throws WatchlistNotFoundException       if the watchlist to delete is not found.
+     * @throws WatchListNotFoundException       if the watchlist to delete is not found.
      * @throws WatchListNotOwnedByUserException if the watchlist is not owned by the user.
      */
     @Transactional
@@ -103,12 +103,12 @@ public class WatchlistService {
      * @param id     The ID of the watchlist.
      * @param userId The user identifier.
      * @return The Watchlist entity.
-     * @throws WatchlistNotFoundException       if the watchlist is not found.
+     * @throws WatchListNotFoundException       if the watchlist is not found.
      * @throws WatchListNotOwnedByUserException if the watchlist does not belong to the user.
      */
     private Watchlist getWatchListById(Long id, String userId) {
         Watchlist watchlist = watchListRepository.findById(id)
-                .orElseThrow(() -> new WatchlistNotFoundException("Watchlist not found for Id :" + id));
+                .orElseThrow(() -> new WatchListNotFoundException("Watchlist not found for Id :" + id));
 
         if (!Objects.equals(watchlist.getUserId(), userId)) {
             throw new WatchListNotOwnedByUserException("Watchlist was not created by the user");
@@ -121,12 +121,12 @@ public class WatchlistService {
      *
      * @param watchlistName The watchlist name to validate.
      * @param userId        The userId owning the watchlist.
-     * @throws WatchlistAlreadyExistsException if the watchlist name already exists.
+     * @throws WatchListAlreadyExistsException if the watchlist name already exists.
      */
     private void validateWatchlistName(String watchlistName, String userId) {
 
         if (watchListRepository.existsByNameAndUserId(watchlistName, userId)) {
-            throw new WatchlistAlreadyExistsException("Watchlist already exists with name : " + watchlistName);
+            throw new WatchListAlreadyExistsException("Watchlist already exists with name : " + watchlistName);
         }
     }
 
@@ -137,7 +137,7 @@ public class WatchlistService {
      * @param request The DTO containing watchlist details.
      * @return The constructed Watchlist entity.
      */
-    private Watchlist buildWatchlist(String userSub, CreateWatchlistRequestDTO request) {
+    private Watchlist buildWatchlist(String userSub, CreateWatchListRequestDTO request) {
         Date date = new Date();
         return Watchlist.builder()
                 .userId(userSub)

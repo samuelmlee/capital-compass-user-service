@@ -1,8 +1,8 @@
 package org.capitalcompass.userservice.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.capitalcompass.userservice.dto.CreateWatchlistRequestDTO;
-import org.capitalcompass.userservice.dto.EditWatchlistRequestDTO;
+import org.capitalcompass.userservice.dto.CreateWatchListRequestDTO;
+import org.capitalcompass.userservice.dto.EditWatchListRequestDTO;
 import org.capitalcompass.userservice.entity.Watchlist;
 import org.capitalcompass.userservice.service.WatchlistService;
 import org.springframework.http.HttpStatus;
@@ -46,7 +46,7 @@ public class WatchlistController {
      */
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
-    public Watchlist createWatchlist(Principal principal, @Valid @RequestBody CreateWatchlistRequestDTO request) {
+    public Watchlist createWatchlist(Principal principal, @Valid @RequestBody CreateWatchListRequestDTO request) {
         String userSub = principal.getName();
         return watchlistService.createWatchList(userSub, request);
     }
@@ -59,7 +59,7 @@ public class WatchlistController {
      * @return The updated Watchlist entity.
      */
     @PutMapping
-    public Watchlist updateWatchlist(Principal principal, @Valid @RequestBody EditWatchlistRequestDTO request) {
+    public Watchlist updateWatchlist(Principal principal, @Valid @RequestBody EditWatchListRequestDTO request) {
         String userSub = principal.getName();
         return watchlistService.updateWatchlist(userSub, request);
     }

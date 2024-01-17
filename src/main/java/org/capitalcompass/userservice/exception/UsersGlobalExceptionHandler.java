@@ -11,15 +11,15 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class UsersGlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(value = {WatchlistNotFoundException.class})
-    public ResponseEntity<?> handleWatchlistNotFound(WatchlistNotFoundException watchlistNotFoundException, WebRequest request) {
+    @ExceptionHandler(value = {WatchListNotFoundException.class})
+    public ResponseEntity<?> handleWatchlistNotFound(WatchListNotFoundException watchlistNotFoundException, WebRequest request) {
         return super.handleExceptionInternal(watchlistNotFoundException,
                 watchlistNotFoundException.getMessage(), new HttpHeaders(),
                 HttpStatus.NOT_FOUND, request);
     }
 
-    @ExceptionHandler(value = {WatchlistAlreadyExistsException.class})
-    public ResponseEntity<?> handleWatchlistAlreadyExists(WatchlistAlreadyExistsException watchlistAlreadyExistsException, WebRequest request) {
+    @ExceptionHandler(value = {WatchListAlreadyExistsException.class})
+    public ResponseEntity<?> handleWatchlistAlreadyExists(WatchListAlreadyExistsException watchlistAlreadyExistsException, WebRequest request) {
         return super.handleExceptionInternal(watchlistAlreadyExistsException,
                 watchlistAlreadyExistsException.getMessage(), new HttpHeaders(),
                 HttpStatus.CONFLICT, request);
@@ -37,6 +37,13 @@ public class UsersGlobalExceptionHandler extends ResponseEntityExceptionHandler 
         return super.handleExceptionInternal(tickerSymbolsNotValidatedException,
                 tickerSymbolsNotValidatedException.getMessage(), new HttpHeaders(),
                 HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(value = {KeycloakClientErrorException.class})
+    public ResponseEntity<?> handleKeycloakClientErrorException(KeycloakClientErrorException keycloakClientErrorException, WebRequest request) {
+        return super.handleExceptionInternal(keycloakClientErrorException,
+                keycloakClientErrorException.getMessage(), new HttpHeaders(),
+                HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
 
