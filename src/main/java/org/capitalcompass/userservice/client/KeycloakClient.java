@@ -5,10 +5,7 @@ import org.capitalcompass.userservice.api.KeycloakTokenResponse;
 import org.capitalcompass.userservice.api.KeycloakUser;
 import org.capitalcompass.userservice.exception.KeycloakClientErrorException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -42,13 +39,15 @@ public class KeycloakClient {
         map.add("client_secret", keycloakClientSecret);
         map.add("grant_type", "client_credentials");
 
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+
 
         try {
-            ResponseEntity<KeycloakTokenResponse> response = restTemplate.postForEntity(
-                    keycloakBaseUrl + "/realms/" + keycloakRealm + "/protocol/openid-connect/token",
-                    request,
-                    KeycloakTokenResponse.class);
+            ResponseEntity<KeycloakTokenResponse> response =
+                    restTemplate.exchange(keycloakBaseUrl + "/realms/" + keycloakRealm + "/protocol/openid-connect/token",
+                            HttpMethod.POST,
+                            entity,
+                            KeycloakTokenResponse.class);
 
             if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
                 throw new KeycloakClientErrorException("Error occurred getting access token. HTTP status: " + response.getStatusCode());
@@ -64,11 +63,12 @@ public class KeycloakClient {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", "Bearer " + accessToken);
 
-        HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+        HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 
         try {
-            ResponseEntity<KeycloakUser[]> response = restTemplate.postForEntity(
-                    keycloakBaseUrl + "/realms/" + keycloakRealm + "/protocol/openid-connect/token",
+            ResponseEntity<KeycloakUser[]> response = restTemplate.exchange(
+                    keycloakBaseUrl + "/admin/realms/" + keycloakRealm + "/users",
+                    HttpMethod.GET,
                     entity,
                     KeycloakUser[].class);
 
