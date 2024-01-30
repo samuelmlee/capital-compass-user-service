@@ -1,5 +1,6 @@
 package org.capitalcompass.userservice.exception;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +45,13 @@ public class UsersGlobalExceptionHandler extends ResponseEntityExceptionHandler 
         return super.handleExceptionInternal(keycloakClientErrorException,
                 keycloakClientErrorException.getMessage(), new HttpHeaders(),
                 HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+
+    @ExceptionHandler(value = {DataAccessException.class})
+    public ResponseEntity<Object> handleDatabaseException(DataAccessException dataAccessException, WebRequest request) {
+        String responseBody = "Database error for User Service";
+        return handleExceptionInternal(dataAccessException, responseBody,
+                new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
 

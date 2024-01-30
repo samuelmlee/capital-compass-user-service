@@ -56,8 +56,9 @@ public class WatchlistService {
         validateWatchlistName(request.getName(), userSub);
 
         Watchlist watchlist = buildWatchlist(userSub, request);
-        List<Ticker> tickers = getTickersForWatchlist(request.getTickerSymbols());
-        tickers.forEach(watchlist::addTicker);
+
+        addTickersToWatchlist(request.getTickerSymbols(), watchlist);
+
         return watchListRepository.save(watchlist);
     }
 
@@ -78,8 +79,8 @@ public class WatchlistService {
 
         watchlistToUpdate.clearTickers();
 
-        List<Ticker> updatedTickers = getTickersForWatchlist(request.getTickerSymbols());
-        updatedTickers.forEach(watchlistToUpdate::addTicker);
+        addTickersToWatchlist(request.getTickerSymbols(), watchlistToUpdate);
+        
         return watchListRepository.save(watchlistToUpdate);
     }
 
@@ -95,6 +96,26 @@ public class WatchlistService {
     public void deleteWatchlist(String userSub, Long watchlistId) {
         Watchlist watchlistToDelete = getWatchListById(watchlistId, userSub);
         watchListRepository.delete(watchlistToDelete);
+    }
+
+    /**
+     * Adds tickers to a given watchlist based on the ticker symbols provided in the request DTO. This method
+     * first checks if the provided set of ticker symbols is empty and, if not, proceeds to retrieve and validate these ticker symbols
+     * by calling {@link StocksServiceClient#registerTickers(Set)}. It then fetches the corresponding Ticker entities for the validated ticker symbols
+     * using {@link TickerService#findTickersBySymbols(Set)}. If any of the provided ticker symbols cannot be validated,
+     * a {@link TickerSymbolsNotValidatedException} is thrown. Each validated ticker is then added to the watchlist.
+     *
+     * @param tickerSymbols The set of ticker symbols to be added to the watchlist.
+     * @param watchlist     The watchlist to which the tickers will be added. The watchlist is modified in-place.
+     * @throws TickerSymbolsNotValidatedException if any of the provided ticker symbols cannot be validated
+     *                                            through {@link StocksServiceClient#registerTickers(Set)}.
+     */
+    private void addTickersToWatchlist(Set<String> tickerSymbols, Watchlist watchlist) {
+        if (tickerSymbols.isEmpty()) {
+            return;
+        }
+        List<Ticker> tickers = getTickersForWatchlist(tickerSymbols);
+        tickers.forEach(watchlist::addTicker);
     }
 
     /**
