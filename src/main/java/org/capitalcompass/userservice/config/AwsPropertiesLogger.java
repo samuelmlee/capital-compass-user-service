@@ -18,6 +18,6 @@ public class AwsPropertiesLogger implements ApplicationListener<ContextRefreshed
     public void onApplicationEvent(ContextRefreshedEvent event) {
         String datasourceUsername = env.getProperty("spring.datasource.username");
 
-        log.info("spring.datasource.username: {}", datasourceUsername);
+        log.debug("spring.datasource.username: {}", datasourceUsername);
     }
 }
