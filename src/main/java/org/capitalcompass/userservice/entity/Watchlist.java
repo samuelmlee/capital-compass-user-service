@@ -31,7 +31,6 @@ public class Watchlist {
 
     @NotNull
     @NotBlank
-    @Column(unique = true)
     private String name;
 
     @NotNull
@@ -39,9 +38,7 @@ public class Watchlist {
 
     @NotNull
     private Date lastUpdateDate;
-
-    //    @Setter(AccessLevel.NONE)
-//    @Getter(AccessLevel.NONE)
+    
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(
             joinColumns = @JoinColumn(name = "watchlist_id"),
