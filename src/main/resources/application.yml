@@ -13,9 +13,6 @@ spring:
     driver: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate.ddl-auto: update
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
 
   security:
     oauth2:

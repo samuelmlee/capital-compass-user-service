@@ -13,7 +13,7 @@ import org.capitalcompass.userservice.exception.WatchListNotOwnedByUserException
 import org.capitalcompass.userservice.repository.WatchListRepository;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
